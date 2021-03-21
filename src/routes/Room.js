@@ -45,6 +45,7 @@ const Room = (props) => {
     const roomID = props.match.params.roomID;
 
     useEffect(() => {
+        console.log("socket", socketRef)
         socketRef.current = io.connect("/");
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
             userVideo.current.srcObject = stream;
@@ -52,6 +53,7 @@ const Room = (props) => {
             socketRef.current.on("all users", users => {
                 const peers = [];
                 users.forEach(userID => {
+                    console.log("socket", socketRef)
                     const peer = createPeer(userID, socketRef.current.id, stream);
                     peersRef.current.push({
                         peerID: userID,
@@ -63,6 +65,7 @@ const Room = (props) => {
             })
 
             socketRef.current.on("user joined", payload => {
+                console.log("payload", payload)
                 const peer = addPeer(payload.signal, payload.callerID, stream);
                 peersRef.current.push({
                     peerID: payload.callerID,
